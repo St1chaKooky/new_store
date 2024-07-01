@@ -9,5 +9,4 @@ class LoginEvent extends AuthEvent {
 
   LoginEvent({required this.username, required this.password});
 }
-
-class StartEvent extends AuthEvent {}
+class CheckAuthEvent extends AuthEvent {}

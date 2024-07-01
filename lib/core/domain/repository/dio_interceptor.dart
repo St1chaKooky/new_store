@@ -1,22 +1,28 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
+import 'package:new_store/core/domain/secure/secure_repository.dart';
 
-class  DioInterceptor  extends  Interceptor { 
-  final String token;
-  DioInterceptor(this.token);
-  
-  @override 
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) { 
-    // получить токен из хранилища 
-      options.headers.addAll({ 
-        "Authorization" : "Bearer ${token} " , 
-      }); 
-    return  super.onRequest(options, handler); 
-  } 
+class DioInterceptor extends Interceptor {
+  final SecureRepo secureRepo;
+  DioInterceptor(this.secureRepo);
+
+  @override
+  void onRequest(
+      RequestOptions options, RequestInterceptorHandler handler) async {
+    final token = await secureRepo.readValue('token');
+    // получить токен из хранилища
+    if (token != null) {
+      options.headers.addAll({
+        "Authorization": "Bearer ${token}",
+      });
+    }
+
+    return super.onRequest(options, handler);
+  }
+
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    // Do something with response data
     super.onResponse(response, handler);
   }
 
@@ -27,7 +33,10 @@ class  DioInterceptor  extends  Interceptor {
   ) async {
     // If the error is 401 Unauthorized, log out the user
     if (err.response?.statusCode == 401) {
-      log("Error responce secure", error: err, );
+      log(
+        "Error responce secure",
+        error: err,
+      );
     }
     super.onError(err, handler);
   }

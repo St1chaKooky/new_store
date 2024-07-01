@@ -1,6 +1,4 @@
 import 'dart:developer';
-import 'dart:nativewrappers/_internal/vm/lib/ffi_allocation_patch.dart';
-
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:new_store/core/domain/di/block_scope_di.dart';
@@ -8,15 +6,14 @@ import 'package:new_store/core/domain/di/params_scope.dart';
 import 'package:new_store/core/domain/di/repository_scope_di.dart';
 import 'package:new_store/core/domain/repository/dio_interceptor.dart';
 import 'package:new_store/core/domain/secure/secure_repository.dart';
-import 'package:new_store/feature/account/data/repository/user_mocked_repo.dart';
+import 'package:new_store/feature/account/data/repository/user_repo_impl.dart';
 import 'package:new_store/feature/account/data/service/user_api_client.dart';
 import 'package:new_store/feature/account/domain/bloc/user_bloc.dart';
 import 'package:new_store/feature/account/domain/repository/user_repo.dart';
-import 'package:new_store/feature/auth/data/repository/auth_mocked_repo.dart';
+import 'package:new_store/feature/auth/data/repository/auth_repo_impl.dart';
 import 'package:new_store/feature/auth/data/service/auth_api_client.dart';
 import 'package:new_store/feature/auth/domain/bloc/auth_bloc.dart';
 import 'package:new_store/feature/auth/domain/repository/auth_repo.dart';
-import 'package:new_store/feature/splash/domain/bloc/check_bloc.dart';
 
 class Di {
   //Обьявлем здесь скоупы
@@ -43,25 +40,23 @@ class Di {
   //иницилизируем зависимости нашего DI контейнера
   Future<bool> initDependencies() async {
     try {
-      
+      final SecureRepo secureRepo = SecureRepo();
       //обьявляем highСкопы
       final Dio dio = Dio();
-      final SecureRepo secureRepo = SecureRepo();
+      dio.interceptors.add(DioInterceptor(secureRepo));
       final AuthApiClient authApiClient = AuthApiClient(dio);
       final UserApiClient userApiClient = UserApiClient(dio);
       //обьявляем скопы репозиториев
-      final AuthRepo authRepo = AuthMockedRepo(authApiClient, secureRepo);
-      final UserRepo userhRepo = UserMockedRepo(userApiClient, secureRepo);
+      final AuthRepo authRepo = AuthRepoImpl(authApiClient, secureRepo);
+      final UserRepo userhRepo = UserRepoImpl(userApiClient, secureRepo);
       repositoryScope = RepositoryScope(authRepo: authRepo, userhRepo: userhRepo);
 
-      final token = await secureRepo.readValue('token');
-      token != null ? dio.interceptors.add(DioInterceptor(token)) : null;
+      
 
       //обьявляем скопы стейт менеджера 
-      final checkAuthBlock = CheckBloc(token: token);
       final userBlock = UserBloc(repo: repositoryScope.userhRepo);
-      final authBlock = AuthBloc(repo: repositoryScope.authRepo);
-      blockScope = BlocksScope(authBlock: authBlock, userBloc: userBlock, checkBloc: checkAuthBlock, );
+      final authBlock = AuthBloc(authRepo: repositoryScope.authRepo, secureRepo: secureRepo);
+      blockScope = BlocksScope(authBlock: authBlock, userBloc: userBlock, );
       //Иницилизированные параметры
 
       

@@ -7,7 +7,5 @@ abstract class UserApiClient {
   factory UserApiClient(Dio dio, {String baseUrl}) = _UserApiClient;
 
   @GET('/me')
-  Future<CurrentAuthModel> getCurrentUser(
-    @Header('Authorization') String token
-  );
+  Future<CurrentAuthModel> getCurrentUser();
 }

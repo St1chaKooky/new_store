@@ -22,16 +22,6 @@ class _SignInPageState extends State<SignInPage> {
   TextEditingController passwordController = TextEditingController();
   ValueNotifier<String> error = ValueNotifier('');
   ValueNotifier isLoading = ValueNotifier(false);
-  @override
-  void initState() {
-    _bloc.add(StartEvent());
-    super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-  }
 
   @override
   void dispose() {
@@ -77,7 +67,6 @@ class _SignInPageState extends State<SignInPage> {
                   error.value = errorMessage;
                   isLoading.value = false;
                 }
-                
             }
         
               },

@@ -7,11 +7,11 @@ import 'package:new_store/feature/account/data/models/current_auth_model.dart';
 import 'package:new_store/feature/account/data/service/user_api_client.dart';
 import 'package:new_store/feature/account/domain/repository/user_repo.dart';
 
-class UserMockedRepo implements UserRepo {
+class UserRepoImpl implements UserRepo {
   final UserApiClient _userApiClient;
   final SecureRepo _secureRepo;
 
-  UserMockedRepo(this._userApiClient, this._secureRepo);
+  UserRepoImpl(this._userApiClient, this._secureRepo);
 
 
   @override
@@ -20,12 +20,12 @@ class UserMockedRepo implements UserRepo {
       final token = await _secureRepo.readValue('token');
       if (token != null){
         log(token);
-        final user = await _userApiClient.getCurrentUser('Bearer $token');
+        final user = await _userApiClient.getCurrentUser();
         log(user.toString());
         return DataResult(user);
       }
       
-      return ErrorResult(['token = null']);
+      return const ErrorResult(['token = null']);
     }on DioException catch(error) {
       if (error.response != null){
           return ErrorResult([extractMessage(error.response!.data.toString())]);
