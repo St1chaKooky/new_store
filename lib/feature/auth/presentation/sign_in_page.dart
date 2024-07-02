@@ -1,6 +1,4 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:new_store/core/domain/router/router.dart';
@@ -10,7 +8,8 @@ import 'package:new_store/feature/auth/domain/bloc/auth_bloc.dart';
 
 class SignInPage extends StatefulWidget {
   final AuthBloc _authBlock;
-  const SignInPage({super.key, required AuthBloc authBlock}): _authBlock = authBlock;
+  const SignInPage({super.key, required AuthBloc authBlock})
+      : _authBlock = authBlock;
 
   @override
   State<SignInPage> createState() => _SignInPageState();
@@ -30,13 +29,12 @@ class _SignInPageState extends State<SignInPage> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.sizeOf(context).height;
     return Scaffold(
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             SizedBox(
@@ -59,33 +57,41 @@ class _SignInPageState extends State<SignInPage> {
             ),
             BlocListener<AuthBloc, AuthState>(
               bloc: _bloc,
-              listener: (context,state) {
+              listener: (context, state) {
                 switch (state) {
-                case AuthLoading(): isLoading.value = true;
-                case AuthSucces(): context.go(RouteList.account);
-                case AuthError(:final errorMessage):{
-                  error.value = errorMessage;
-                  isLoading.value = false;
+                  case AuthLoading():
+                    isLoading.value = true;
+                  case AuthSucces():
+                    context.go(RouteList.account);
+                  case AuthError(:final errorMessage):
+                    {
+                      error.value = errorMessage;
+                      isLoading.value = false;
+                    }
+                  case Unknow():
+                  // TODO: Handle this case.
+                  case Authenticated():
+                  // TODO: Handle this case.
+                  case UnAuthenticated():
+                  // TODO: Handle this case.
+                  case LogoutSucces():
+                  // TODO: Handle this case.
                 }
-            }
-        
               },
               child: ValueListenableBuilder(
-                builder:(context, state, child) {
+                builder: (context, state, child) {
                   return AppFilledButton(
-                      onTap: () async { 
-                        _bloc.add(LoginEvent(
-                            username: nameController.text,
-                            password: passwordController.text));
-                      },
-                      text: 'Войти',
-                      isLoading: isLoading.value,
-                    );
+                    onTap: () async {
+                      _bloc.add(LoginEvent(
+                          username: nameController.text,
+                          password: passwordController.text));
+                    },
+                    text: 'Войти',
+                    isLoading: isLoading.value,
+                  );
                 },
                 valueListenable: isLoading,
-
-              )
-              ,
+              ),
             ),
             const SizedBox(
               height: 25,

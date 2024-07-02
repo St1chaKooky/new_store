@@ -1,16 +1,19 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:new_store/feature/account/data/models/current_auth_model.dart';
 import 'package:new_store/feature/account/domain/bloc/user_bloc.dart';
+import 'package:new_store/feature/auth/domain/bloc/auth_bloc.dart';
 import 'package:new_store/theme/collections/colorCollection.dart';
 
 class AccountPage extends StatefulWidget {
   final UserBloc _userBloc;
-  
-  const AccountPage({super.key, required UserBloc userBloc})
-      : _userBloc = userBloc;
+  final AuthBloc authBloc;
+
+  const AccountPage({
+    super.key,
+    required UserBloc userBloc,
+    required this.authBloc,
+  }) : _userBloc = userBloc;
 
   @override
   State<AccountPage> createState() => _AccountPageState();
@@ -18,6 +21,8 @@ class AccountPage extends StatefulWidget {
 
 class _AccountPageState extends State<AccountPage> {
   UserBloc get _bloc => widget._userBloc;
+
+  AuthBloc get _authBloc => widget.authBloc;
   @override
   void initState() {
     _bloc.add(GetCurrentUser());
@@ -31,7 +36,6 @@ class _AccountPageState extends State<AccountPage> {
         bloc: _bloc,
         builder: (context, state) {
           return switch (state) {
-            
             UserLoading() => const Center(
                 child: CircularProgressIndicator(
                   color: ColorCollection.primary,
@@ -51,15 +55,19 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   Widget succesBuilder(CurrentAuthModel user) => Scaffold(
-    appBar: AppBar(
-      centerTitle: true,
-      title: Text(user.firstName + user.lastName),
-      actions: [
-        IconButton(onPressed: (){}, icon: Icon(Icons.exit_to_app_outlined))
-      ],
-    ),
-    body: SingleChildScrollView(
-          padding: EdgeInsets.all(16).copyWith(top: 40),
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text(user.firstName + user.lastName),
+          actions: [
+            IconButton(
+                onPressed: () {
+                  _authBloc.add(Logout());
+                },
+                icon: const Icon(Icons.exit_to_app_outlined))
+          ],
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(16).copyWith(top: 40),
           child: Center(
             child: Column(
               children: [
@@ -70,11 +78,13 @@ class _AccountPageState extends State<AccountPage> {
                   ),
                   backgroundColor: const Color.fromARGB(255, 177, 177, 177),
                 ),
-                const SizedBox(height: 10,),
+                const SizedBox(
+                  height: 10,
+                ),
                 Text(user.maidenName)
               ],
             ),
           ),
         ),
-  );
+      );
 }
