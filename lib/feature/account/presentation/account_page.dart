@@ -38,7 +38,12 @@ class _AccountPageState extends State<AccountPage> {
                 ),
               ),
             UserError(:final errorMessage) => Center(
-                child: Text('Error: $errorMessage'),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children:[ Text('Error: $errorMessage'),
+                ElevatedButton(onPressed: (){
+                  _bloc.add(GetCurrentUser());
+                }, child: const Text('Go refresh'))]),
               ),
             UserSucces(:final user) => succesBuilder(user),
 

@@ -13,7 +13,7 @@ class AuthRepoImpl implements AuthRepo {
   AuthRepoImpl(this._authApiClient, this._secureRepo);
   @override
   Future<Result<UserModel>> signIn(String username, String password,
-      [int expiresInMins = 30]) async {
+      [int expiresInMins = 1]) async {
     try {
       PostUserModel postUser = PostUserModel(
         password: password,
