@@ -43,6 +43,7 @@ class Di {
       final SecureRepo secureRepo = SecureRepo();
       //обьявляем highСкопы
       final Dio dio = Dio();
+      dio.interceptors.clear();
       dio.interceptors.add(DioInterceptor(secureRepo));
       final AuthApiClient authApiClient = AuthApiClient(dio);
       final UserApiClient userApiClient = UserApiClient(dio);

@@ -9,10 +9,11 @@ class DioInterceptor extends Interceptor {
 
   @override
   void onRequest(
-      RequestOptions options, RequestInterceptorHandler handler) async {
+RequestOptions options, RequestInterceptorHandler handler) async {
     final token = await secureRepo.readValue('token');
     // получить токен из хранилища
     if (token != null) {
+      log(token.toString());
       options.headers.addAll({
         "Authorization": "Bearer ${token}",
       });
@@ -28,7 +29,7 @@ class DioInterceptor extends Interceptor {
 
   @override
   Future onError(
-    DioError err,
+    DioException err,
     ErrorInterceptorHandler handler,
   ) async {
     // If the error is 401 Unauthorized, log out the user

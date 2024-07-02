@@ -15,6 +15,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc({required this.authRepo, required this.secureRepo}) : super(AuthLoading()) {
     on<LoginEvent>((event, emit) => signInHandler(event, emit, authRepo));
     on<CheckAuthEvent>((event, emit) => checkAuthHandler(event, emit, secureRepo),);
+    on<Logout>((event, emit) => logoutHanler(event,emit,secureRepo) ,);
   }
 
   void checkAuthHandler(CheckAuthEvent event, Emitter<AuthState> emit, SecureRepo secureRepo) async {
@@ -25,6 +26,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     } else {
       emit(UnAuthenticated());
     }
+  }
+
+  void logoutHanler(Logout event, Emitter<AuthState> emit, SecureRepo secureRepo) async {
+    emit(AuthLoading());
+    await secureRepo.delete();
+    emit(LogoutSucces());
   }
 
   void signInHandler(

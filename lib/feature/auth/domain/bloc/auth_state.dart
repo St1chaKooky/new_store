@@ -23,3 +23,7 @@ class AuthError extends AuthState {
   AuthError({required this.errorMessage});
 }
 
+//logout
+class LogoutSucces extends AuthState{}
+
+

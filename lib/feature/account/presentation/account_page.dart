@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,6 +8,7 @@ import 'package:new_store/theme/collections/colorCollection.dart';
 
 class AccountPage extends StatefulWidget {
   final UserBloc _userBloc;
+  
   const AccountPage({super.key, required UserBloc userBloc})
       : _userBloc = userBloc;
 
@@ -29,6 +31,7 @@ class _AccountPageState extends State<AccountPage> {
         bloc: _bloc,
         builder: (context, state) {
           return switch (state) {
+            
             UserLoading() => const Center(
                 child: CircularProgressIndicator(
                   color: ColorCollection.primary,
@@ -51,6 +54,9 @@ class _AccountPageState extends State<AccountPage> {
     appBar: AppBar(
       centerTitle: true,
       title: Text(user.firstName + user.lastName),
+      actions: [
+        IconButton(onPressed: (){}, icon: Icon(Icons.exit_to_app_outlined))
+      ],
     ),
     body: SingleChildScrollView(
           padding: EdgeInsets.all(16).copyWith(top: 40),

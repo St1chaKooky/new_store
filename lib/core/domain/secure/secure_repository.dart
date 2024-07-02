@@ -9,6 +9,10 @@ class SecureRepo {
  }
  Future<String?> readValue(String key) async{
   String? value = await storage.read(key: key);
-  return value!;
+  return value;
  }
+ Future<void> delete() async {
+  await storage.deleteAll();
+ }
+
 }

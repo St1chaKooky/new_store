@@ -24,9 +24,8 @@ class UserRepoImpl implements UserRepo {
         log(user.toString());
         return DataResult(user);
       }
-      
       return const ErrorResult(['token = null']);
-    }on DioException catch(error) {
+    } on DioException catch(error) {
       if (error.response != null){
           return ErrorResult([extractMessage(error.response!.data.toString())]);
         } else {
