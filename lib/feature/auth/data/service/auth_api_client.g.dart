@@ -13,7 +13,7 @@ class _AuthApiClient implements AuthApiClient {
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= 'https://dummyjson.com/user/';
+    baseUrl ??= 'https://dummyjson.com/auth/';
   }
 
   final Dio _dio;
@@ -45,6 +45,34 @@ class _AuthApiClient implements AuthApiClient {
               baseUrl,
             ))));
     final value = UserModel.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<RefreshTokenResponse> refreshToken(RefreshTokenBody body) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(body.toJson());
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<RefreshTokenResponse>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/refresh',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = RefreshTokenResponse.fromJson(_result.data!);
     return value;
   }
 

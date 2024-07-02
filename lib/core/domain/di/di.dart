@@ -1,10 +1,11 @@
 import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:new_store/core/domain/di/block_scope_di.dart';
 import 'package:new_store/core/domain/di/params_scope.dart';
 import 'package:new_store/core/domain/di/repository_scope_di.dart';
-import 'package:new_store/core/domain/repository/dio_interceptor.dart';
+import 'package:new_store/core/domain/repository/token_interceptor.dart';
 import 'package:new_store/core/domain/secure/secure_repository.dart';
 import 'package:new_store/feature/account/data/repository/user_repo_impl.dart';
 import 'package:new_store/feature/account/data/service/user_api_client.dart';
@@ -23,7 +24,7 @@ class Di {
   late final BlocksScope blockScope;
   late final RepositoryScope repositoryScope;
   late final ParamsScope paramsScope;
-  
+
   late final Future<bool> ready;
 
   //Иминованный конструктор через который мы иницилизируем нашу DI вместо того
@@ -41,26 +42,31 @@ class Di {
   Future<bool> initDependencies() async {
     try {
       final SecureRepo secureRepo = SecureRepo();
+
+      final authDio = Dio();
+      final AuthApiClient authApiClient = AuthApiClient(authDio);
+      final AuthRepo authRepo = AuthRepoImpl(authApiClient, secureRepo);
+
       //обьявляем highСкопы
       final Dio dio = Dio();
       dio.interceptors.clear();
-      dio.interceptors.add(DioInterceptor(secureRepo));
-      final AuthApiClient authApiClient = AuthApiClient(dio);
+      dio.interceptors.add(TokenInterceptor(secureRepo, authRepo));
       final UserApiClient userApiClient = UserApiClient(dio);
       //обьявляем скопы репозиториев
-      final AuthRepo authRepo = AuthRepoImpl(authApiClient, secureRepo);
       final UserRepo userhRepo = UserRepoImpl(userApiClient, secureRepo);
-      repositoryScope = RepositoryScope(authRepo: authRepo, userhRepo: userhRepo);
+      repositoryScope =
+          RepositoryScope(authRepo: authRepo, userhRepo: userhRepo);
 
-      
-
-      //обьявляем скопы стейт менеджера 
+      //обьявляем скопы стейт менеджера
       final userBlock = UserBloc(repo: repositoryScope.userhRepo);
-      final authBlock = AuthBloc(authRepo: repositoryScope.authRepo, secureRepo: secureRepo);
-      blockScope = BlocksScope(authBlock: authBlock, userBloc: userBlock, );
+      final authBlock =
+          AuthBloc(authRepo: repositoryScope.authRepo, secureRepo: secureRepo);
+      blockScope = BlocksScope(
+        authBlock: authBlock,
+        userBloc: userBlock,
+      );
       //Иницилизированные параметры
 
-      
       return true;
     } catch (e, st) {
       log('App Container has not been initialized', error: e, stackTrace: st);
@@ -68,4 +74,3 @@ class Di {
     }
   }
 }
-
