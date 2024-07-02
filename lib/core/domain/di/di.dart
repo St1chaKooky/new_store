@@ -6,6 +6,7 @@ import 'package:new_store/core/domain/di/block_scope_di.dart';
 import 'package:new_store/core/domain/di/params_scope.dart';
 import 'package:new_store/core/domain/di/repository_scope_di.dart';
 import 'package:new_store/core/domain/repository/token_interceptor.dart';
+import 'package:new_store/core/domain/router/router.dart';
 import 'package:new_store/core/domain/secure/secure_repository.dart';
 import 'package:new_store/feature/account/data/repository/user_repo_impl.dart';
 import 'package:new_store/feature/account/data/service/user_api_client.dart';
@@ -59,8 +60,11 @@ class Di {
 
       //обьявляем скопы стейт менеджера
       final userBlock = UserBloc(repo: repositoryScope.userhRepo);
-      final authBlock =
-          AuthBloc(authRepo: repositoryScope.authRepo, secureRepo: secureRepo);
+      final authBlock = AuthBloc(
+        authRepo: repositoryScope.authRepo,
+        secureRepo: secureRepo,
+        goRouter: router,
+      );
       blockScope = BlocksScope(
         authBlock: authBlock,
         userBloc: userBlock,

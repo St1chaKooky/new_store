@@ -4,8 +4,8 @@ import 'package:new_store/core/domain/di/di.dart';
 import 'package:new_store/core/presentation/navigation_page/navigation_page.dart';
 import 'package:new_store/feature/account/presentation/account_page.dart';
 import 'package:new_store/feature/auth/presentation/sign_in_page.dart';
-import 'package:new_store/feature/cart/presentation/cart_page.dart';
 import 'package:new_store/feature/auth/presentation/splash_page.dart';
+import 'package:new_store/feature/cart/presentation/cart_page.dart';
 
 class RouteList {
   static const _signInPath = '/signIn';
@@ -36,11 +36,15 @@ final router = GoRouter(
   routes: [
     GoRoute(
       path: RouteList._splashPath,
-      builder: (context, state) =>  SplashPage(authBloc: Di().blockScope.authBlock,),
+      builder: (context, state) => SplashPage(
+        authBloc: Di().blockScope.authBlock,
+      ),
     ),
     GoRoute(
       path: RouteList._signInPath,
-      builder: (context, state) =>  SignInPage(authBlock: Di().blockScope.authBlock,),
+      builder: (context, state) => SignInPage(
+        authBlock: Di().blockScope.authBlock,
+      ),
     ),
     StatefulShellRoute.indexedStack(
       builder: (BuildContext context, GoRouterState state,
@@ -78,7 +82,7 @@ final router = GoRouter(
           routes: <RouteBase>[
             GoRoute(
               path: RouteList.cart,
-              builder: (context, state) => CartPage(),
+              builder: (context, state) => const CartPage(),
             ),
           ],
         ),
@@ -86,7 +90,10 @@ final router = GoRouter(
           routes: <RouteBase>[
             GoRoute(
               path: RouteList.account,
-              builder: (context, state) => AccountPage(userBloc: Di().blockScope.userBloc,),
+              builder: (context, state) => AccountPage(
+                userBloc: Di().blockScope.userBloc,
+                authBloc: Di().blockScope.authBlock,
+              ),
             ),
           ],
         ),

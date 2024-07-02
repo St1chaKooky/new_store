@@ -1,7 +1,7 @@
 part of 'auth_bloc.dart';
 
 @immutable
-abstract class AuthState {}
+sealed class AuthState {}
 
 //check on auth
 class Unknow extends AuthState {}
@@ -24,6 +24,4 @@ class AuthError extends AuthState {
 }
 
 //logout
-class LogoutSucces extends AuthState{}
-
-
+class LogoutSucces extends AuthState {}
