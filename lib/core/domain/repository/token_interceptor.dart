@@ -15,13 +15,26 @@ class TokenInterceptor extends Interceptor {
     final token = await _secureRepo.readValue('token');
     // получить токен из хранилища
     if (token != null) {
-      log(token.toString());
       options.headers.addAll({
         "Authorization": "Bearer $token",
       });
     }
-
     return super.onRequest(options, handler);
+  }
+  
+  @override
+  Future onResponse(Response response,
+    ResponseInterceptorHandler handler,) async {
+      if (response.statusCode == 401) {
+      final refreshToken = await _secureRepo.readValue('refreshToken');
+      if (refreshToken != null) {
+        await _authRepo.refresh();
+      }
+      log(
+        "Error responce secure on 401 PROV",
+      );
+    }
+    super.onResponse(response, handler);
   }
 
   @override

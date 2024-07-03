@@ -68,14 +68,6 @@ class _SignInPageState extends State<SignInPage> {
                       error.value = errorMessage;
                       isLoading.value = false;
                     }
-                  case Unknow():
-                  // TODO: Handle this case.
-                  case Authenticated():
-                  // TODO: Handle this case.
-                  case UnAuthenticated():
-                  // TODO: Handle this case.
-                  case LogoutSucces():
-                  // TODO: Handle this case.
                 }
               },
               child: ValueListenableBuilder(

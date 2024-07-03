@@ -50,9 +50,8 @@ class _AccountPageState extends State<AccountPage> {
                 }, child: const Text('Go refresh'))]),
               ),
             UserSucces(:final user) => succesBuilder(user),
-
             // TODO: Handle this case.
-            UserState() => Container(),
+            UserState() => throw UnimplementedError(),
           };
         },
       ),

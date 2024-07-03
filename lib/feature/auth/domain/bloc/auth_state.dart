@@ -1,10 +1,10 @@
 part of 'auth_bloc.dart';
 
 @immutable
-sealed class AuthState {}
+class AuthState {}
 
 //check on auth
-class Unknow extends AuthState {}
+
 
 class Authenticated extends AuthState {}
 

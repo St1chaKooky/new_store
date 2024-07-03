@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:meta/meta.dart';
@@ -20,13 +22,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required this.secureRepo,
     required final GoRouter goRouter,
   })  : _router = goRouter,
-        super(AuthLoading()) {
+        super(AuthState()) {
     on<LoginEvent>((event, emit) => signInHandler(event, emit, authRepo));
     on<CheckAuthEvent>(
       (event, emit) => checkAuthHandler(event, emit, secureRepo),
     );
     on<Logout>(
-      (event, emit) => logoutHanler(event, emit, secureRepo),
+      (event, emit) => logoutHanler(event, emit),
     );
   }
 
@@ -35,26 +37,36 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoading());
     final token = await secureRepo.readValue('token');
     if (token != null) {
+      log('add Authed');
       emit(Authenticated());
     } else {
+      log('add UnAuthed');
+
       emit(UnAuthenticated());
     }
   }
 
   @override
+  void onEvent(AuthEvent  event) {
+    log(event.toString());
+    super.onEvent(event);
+  }
+
+  @override
+  void onError(Object error, StackTrace stackTrace) {
+    super.onError(error, stackTrace);
+    log('Auth block on Error', error: error, stackTrace: stackTrace);
+  }
+
+  @override
   void onChange(Change<AuthState> change) {
+    log(change.currentState.toString());
     super.onChange(change);
 
     switch (change.nextState) {
-      case Unknow():
-      case AuthError():
-      case AuthLoading():
-        break;
-      case AuthSucces():
       case Authenticated():
         _router.go(RouteList.account);
         break;
-      case LogoutSucces():
       case UnAuthenticated():
         _router.go(RouteList.signIn);
         break;
@@ -64,7 +76,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   void logoutHanler(
-      Logout event, Emitter<AuthState> emit, SecureRepo secureRepo) async {
+      Logout event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
     await secureRepo.delete();
     emit(UnAuthenticated());

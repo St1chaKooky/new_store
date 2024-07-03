@@ -1,7 +1,7 @@
 part of 'user_bloc.dart';
 
 @immutable
-abstract class UserState {}
+class UserState {}
 
 class UserLoading extends UserState {}
 
