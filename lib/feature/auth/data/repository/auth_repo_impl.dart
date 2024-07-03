@@ -53,6 +53,7 @@ class AuthRepoImpl implements AuthRepo {
     try {
       final refreshResult = await _authApiClient.refreshToken(RefreshTokenBody(
         refreshToken: refreshToken,
+        expiresInMins: 1,
       ));
       await _secureRepo.addValue('refreshToken', refreshResult.refreshToken);
       await _secureRepo.addValue('token', refreshResult.token);
