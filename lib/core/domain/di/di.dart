@@ -51,7 +51,7 @@ class Di {
       //обьявляем highСкопы
       final Dio dio = Dio();
       dio.interceptors.clear();
-      dio.interceptors.add(TokenInterceptor(secureRepo, authRepo));
+      dio.interceptors.add(TokenInterceptor(secureRepo, authRepo,authDio));
       final UserApiClient userApiClient = UserApiClient(dio);
       //обьявляем скопы репозиториев
       final UserRepo userhRepo = UserRepoImpl(userApiClient, secureRepo);
