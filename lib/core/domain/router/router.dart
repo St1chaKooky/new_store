@@ -6,6 +6,8 @@ import 'package:new_store/feature/account/presentation/account_page.dart';
 import 'package:new_store/feature/auth/presentation/sign_in_page.dart';
 import 'package:new_store/feature/auth/presentation/splash_page.dart';
 import 'package:new_store/feature/cart/presentation/cart_page.dart';
+import 'package:new_store/feature/product/presentation/page/product_details_page.dart';
+import 'package:new_store/feature/product/presentation/page/product_page.dart';
 
 class RouteList {
   static const _signInPath = '/signIn';
@@ -14,8 +16,8 @@ class RouteList {
   static const _splashPath = '/';
   static const splash = _splashPath;
 
-  // static const _productPath = '/product';
-  // static const product = _productPath;
+  static const _productPath = '/product';
+  static const product = _productPath;
 
   static const _cartPath = '/cart';
   static const cart = _cartPath;
@@ -26,9 +28,9 @@ class RouteList {
   // static const _editPath = 'edit';
   // static String edit() => '$_accountPath/$_editPath';
 
-  // static const _productDetailsPath = 'productDetails';
-  // static String productDetails(String id) =>
-  //     '$product/$_productDetailsPath/$id';
+  static const _productDetailsPath = 'productDetails';
+  static String productDetails(String id) =>
+      '$product/$_productDetailsPath/$id';
 }
 
 final router = GoRouter(
@@ -60,24 +62,24 @@ final router = GoRouter(
         );
       },
       branches: <StatefulShellBranch>[
-        // StatefulShellBranch(
-        //   initialLocation: RouteList.product,
-        //   routes: <RouteBase>[
-        //     GoRoute(
-        //       routes: [
-        //         GoRoute(
-        //           path: '${RouteList._productDetailsPath}/:id',
-        //           builder: (context, state) {
-        //             final id = state.pathParameters['id'];
-        //             return ProductDetails(id: id!);
-        //           },
-        //         )
-        //       ],
-        //       path: RouteList.product,
-        //       builder: (context, state) => const ProductsListPage(),
-        //     ),
-        //   ],
-        // ),
+        StatefulShellBranch(
+          initialLocation: RouteList.product,
+          routes: <RouteBase>[
+            GoRoute(
+              routes: [
+                GoRoute(
+                  path: '${RouteList._productDetailsPath}/:id',
+                  builder: (context, state) {
+                    final id = state.pathParameters['id'];
+                    return ProductDetailsPage(id: id!, productBloc: Di().blockScope.productBloc,);
+                  },
+                )
+              ],
+              path: RouteList.product,
+              builder: (context, state) => ProductPage(productBloc: Di().blockScope.productBloc,),
+            ),
+          ],
+        ),
         StatefulShellBranch(
           routes: <RouteBase>[
             GoRoute(

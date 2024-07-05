@@ -16,6 +16,10 @@ import 'package:new_store/feature/auth/data/repository/auth_repo_impl.dart';
 import 'package:new_store/feature/auth/data/service/auth_api_client.dart';
 import 'package:new_store/feature/auth/domain/bloc/auth_bloc.dart';
 import 'package:new_store/feature/auth/domain/repository/auth_repo.dart';
+import 'package:new_store/feature/product/data/repository/product_repo_impl.dart';
+import 'package:new_store/feature/product/data/service/product_api_client.dart';
+import 'package:new_store/feature/product/domain/bloc/product_bloc.dart';
+import 'package:new_store/feature/product/domain/repository/product_repo.dart';
 
 class Di {
   //Обьявлем здесь скоупы
@@ -51,21 +55,24 @@ class Di {
       //обьявляем highСкопы
       final Dio dio = Dio();
       dio.interceptors.clear();
-      dio.interceptors.add(TokenInterceptor(secureRepo, authRepo,authDio));
+      dio.interceptors.add(TokenInterceptor(secureRepo, authRepo, authDio));
+      final ProductApiClient productApiClient = ProductApiClient(dio);
       final UserApiClient userApiClient = UserApiClient(dio);
       //обьявляем скопы репозиториев
+      final ProductRepo productRepo = ProductRepoImpl(productApiClient: productApiClient);
       final UserRepo userhRepo = UserRepoImpl(userApiClient, secureRepo);
       repositoryScope =
-          RepositoryScope(authRepo: authRepo, userhRepo: userhRepo);
+          RepositoryScope(authRepo: authRepo, userhRepo: userhRepo, productRepo: productRepo);
 
       //обьявляем скопы стейт менеджера
+      final productBloc = ProductBloc(productRepo: productRepo);
       final userBlock = UserBloc(repo: repositoryScope.userhRepo);
       final authBlock = AuthBloc(
-        authRepo: repositoryScope.authRepo,
-        secureRepo: secureRepo,
-        goRouter: router,
-      );
+          authRepo: repositoryScope.authRepo,
+          secureRepo: secureRepo,
+          goRouter: router);
       blockScope = BlocksScope(
+        productBloc: productBloc,
         authBlock: authBlock,
         userBloc: userBlock,
       );

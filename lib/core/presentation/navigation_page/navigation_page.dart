@@ -32,8 +32,8 @@ class NavigationPage extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                       ),
               items: const <BottomNavigationBarItem>[
-                // BottomNavigationBarItem(
-                //     icon: Icon(Icons.home_outlined), label: 'Главная'),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.home_outlined), label: 'Главная'),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.shopping_cart_outlined),
                   label: 'Корзина',
