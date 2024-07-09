@@ -5,9 +5,9 @@ import 'package:new_store/core/domain/router/router.dart';
 import 'package:new_store/theme/themes/themeData.dart';
 
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Di.init();
+  await Di().initDependencies();
   final dio = Dio();
   dio.options.headers['Demo-Header'] = 'demo header';
   runApp(const MyApp());

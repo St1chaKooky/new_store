@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:bloc/bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:meta/meta.dart';
@@ -37,30 +35,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoading());
     final token = await secureRepo.readValue('token');
     if (token != null) {
-      log('add Authed');
       emit(Authenticated());
     } else {
-      log('add UnAuthed');
 
       emit(UnAuthenticated());
     }
   }
 
-  @override
-  void onEvent(AuthEvent  event) {
-    log(event.toString());
-    super.onEvent(event);
-  }
-
-  @override
-  void onError(Object error, StackTrace stackTrace) {
-    super.onError(error, stackTrace);
-    log('Auth block on Error', error: error, stackTrace: stackTrace);
-  }
 
   @override
   void onChange(Change<AuthState> change) {
-    log(change.currentState.toString());
     super.onChange(change);
 
     switch (change.nextState) {
