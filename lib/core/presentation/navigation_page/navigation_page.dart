@@ -35,8 +35,8 @@ class NavigationPage extends StatelessWidget {
                 BottomNavigationBarItem(
                     icon: Icon(Icons.home_outlined), label: 'Главная'),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.shopping_cart_outlined),
-                  label: 'Корзина',
+                  icon: Icon(Icons.receipt),
+                  label: 'Рецепты',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.account_circle_outlined),

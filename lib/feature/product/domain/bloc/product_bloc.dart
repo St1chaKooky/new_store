@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
@@ -14,12 +13,6 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   ProductBloc({required this.productRepo}) : super(LoadingProductState()) {
     on<GetProductList>((event, emit) => getProdutcList(event, emit));
     on<GetProductItem>((event, emit) => getProdutcItem(event, emit));
-  }
-
-  @override
-  void onChange(Change<ProductState> change) {
-    log(change.toString());
-    super.onChange(change);
   }
 
   void getProdutcList(GetProductList event, Emitter<ProductState> emit) async {
